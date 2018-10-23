@@ -1,14 +1,18 @@
+extern crate wasm_bindgen;
+
+use wasm_bindgen::prelude::*;
+
 extern {
     fn appendNumberToBody(x: u32);
     fn alert(x: u32);
 }
 
-#[no_mangle]
+#[wasm_bindgen]
 pub extern fn add_one(x: u32) -> u32 {
     x + 1
 }
 
-#[no_mangle]
+#[wasm_bindgen]
 pub extern fn run() {
     unsafe {
         appendNumberToBody(42);
