@@ -4,14 +4,39 @@
     <meta charset="utf-8">
     <title></title>
     <script>
-      fetch('utils.gc.wasm')
-        .then(response => response.arrayBuffer())
-        .then(result => WebAssembly.instantiate(result))
-        .then((wasmModule) => {
-          const result = wasmModule.instance.exports.add_one(2);
-          const text = document.createTextNode(result);
-          document.body.appendChild(text);
-        });
+      const exampleNmbr = 1;
+
+      const examples = [
+        () => {
+          WebAssembly.instantiateStreaming(fetch('utils.gc.wasm'))
+            .then((wasmModule) => {
+              const result = wasmModule.instance.exports.add_one(4);
+              const text = document.createTextNode(result);
+              document.body.appendChild(text);
+            });
+        },
+        () => {
+          const appendNumberToBody = (number) => {
+            const text = document.createTextNode(number);
+            document.body.appendChild(text);
+          }
+
+          const importObject = {
+            env: {
+              appendNumberToBody,
+              alert,
+            },
+          };
+
+          WebAssembly.instantiateStreaming(fetch('utils.gc.wasm'), importObject)
+            .then(wasmModule => {
+              wasmModule.instance.exports.run();
+            });
+        }
+      ]
+
+
+      examples[exampleNmbr]();
     </script>
   </head>
   <body>
